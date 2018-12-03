@@ -1,5 +1,8 @@
-var Benchmark = require('benchmark');
-var {
+const Benchmark = require('benchmark');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const {
   openBrowser,
   closeBrowser,
   comboBox,
@@ -24,7 +27,8 @@ var {
   dismiss,
   accept
 } = require('taiko');
-var suite = new Benchmark.Suite();
+let suite = new Benchmark.Suite();
+const benchmarkResults = [];
 
 // add tests
 suite.add({
@@ -134,11 +138,35 @@ suite.add({
   })
   // add listeners
   .on('cycle', function (event) {
-    console.log(String(event.target));
-    console.log(event.target.stats);
+    const targetResult = {}
+    targetResult['result'] = String(event.target);
+    targetResult['stats'] =  event.target.stats;
+    benchmarkResults.push(targetResult);
   })
-  .on('complete', async function () {
+  .on('complete', function () {
+    console.log(benchmarkResults);
     console.log('Fastest is ' + this.filter('fastest').map('name'));
+    const dir = path.join(process.cwd(), `reports`)
+    const result = {
+      'taikoVersion' : require('taiko/package.json').version,
+      'chromiumVersion': require('taiko/package.json').taiko.chromium_version,
+      'machineDetails':{
+      platform: os.platform(),
+      release: os.release(),
+      osType: os.type(),
+      osArch: os.arch(),
+      cpus: os.cpus(),
+    },
+    benchmarks: benchmarkResults
+    }
+    if (!fs.existsSync(dir)){
+      fs.mkdir(dir , { recursive: true },(err) => {
+        if (err) throw err;
+      });
+    }
+    fs.writeFile(path.join(dir,`${Date.now()}.json`), JSON.stringify(result),(err) => {
+      if (err) throw err;
+    }); 
   })
   // run async
   .run({
