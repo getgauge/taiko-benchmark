@@ -2,6 +2,12 @@ const Benchmark = require('benchmark');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const speedTest = require('speedtest-net');
+const test = speedTest({maxTime: 5000});
+let speed;
+test.on('data', data => {
+  speed = data.speeds;
+});
 const {
   openBrowser,
   closeBrowser,
@@ -83,7 +89,7 @@ suite.add({
     'defer': true
   })
   .add({
-    'name': 'textField',
+    'name': 'textField and write',
     'fn': async (deferred) => {
       await openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
@@ -96,7 +102,7 @@ suite.add({
     'defer': true
   })
   .add({
-    'name': 'scroll',
+    'name': 'scroll(to,right,left,down,up) ',
     'fn': async (deferred) => {
       await openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
@@ -123,7 +129,7 @@ suite.add({
     'defer': true
   })
   .add({
-    'name': 'alert',
+    'name': 'alert and click button',
     'fn': async (deferred) => {
       await openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
@@ -145,8 +151,7 @@ suite.add({
   })
   .on('complete', function () {
     console.log(benchmarkResults);
-    console.log('Fastest is ' + this.filter('fastest').map('name'));
-    const dir = path.join(process.cwd(), `reports`)
+    const dir = path.join(process.cwd(), `reports`);
     const result = {
       'taikoVersion' : require('taiko/package.json').version,
       'chromiumVersion': require('taiko/package.json').taiko.chromium_version,
@@ -157,7 +162,8 @@ suite.add({
       osArch: os.arch(),
       cpus: os.cpus(),
     },
-    benchmarks: benchmarkResults
+    'networkSpeed' : {'upload': speed.upload + 'Mbps', 'download': speed.download + 'Mbps'},
+    'benchmarks': benchmarkResults
     }
     if (!fs.existsSync(dir)){
       fs.mkdir(dir , { recursive: true },(err) => {
