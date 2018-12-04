@@ -38,6 +38,16 @@ const benchmarkResults = [];
 
 // add tests
 suite.add({
+  'name': 'openBrowser goto and closeBrowser',
+  'fn': async (deferred) => {
+    await openBrowser();
+    await goto("https://getgauge-examples.github.io/js-taiko/");
+    await closeBrowser();
+    deferred.resolve();
+  },
+  'defer': true
+})
+.add({
     'name': 'combobox',
     'fn': async (deferred) => {
       await openBrowser();
