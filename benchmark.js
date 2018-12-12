@@ -36,11 +36,22 @@ const {
 let suite = new Benchmark.Suite();
 const benchmarkResults = [];
 
+async function _openBrowser() {
+  await openBrowser({
+    args: [
+      '--disable-gpu',
+      '--disable-dev-shm-usage',
+      '--disable-setuid-sandbox',
+      '--no-first-run',
+      '--no-sandbox',
+      '--no-zygote']
+  })
+}
 // add tests
 suite.add({
   'name': 'openBrowser goto and closeBrowser',
   'fn': async (deferred) => {
-    await openBrowser();
+    await _openBrowser();
     await goto("https://getgauge-examples.github.io/js-taiko/");
     await closeBrowser();
     deferred.resolve();
@@ -50,7 +61,7 @@ suite.add({
 .add({
     'name': 'combobox',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       const box = comboBox('Car');
       await box.exists();
@@ -63,7 +74,7 @@ suite.add({
   .add({
     'name': 'checkbox',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       const box = checkBox('Vehicle');
       await box.exists();
@@ -76,7 +87,7 @@ suite.add({
   .add({
     'name': 'radiobotton',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       const button = radioButton('Female');
       await button.exists();
@@ -89,7 +100,7 @@ suite.add({
   .add({
     'name': 'attachFile',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       const field = fileField('File');
       await attach('file.txt', to(field));
@@ -101,7 +112,7 @@ suite.add({
   .add({
     'name': 'textField and write',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       await write('Gopher', into('Username'));
       const field = textField('Username');
@@ -114,7 +125,7 @@ suite.add({
   .add({
     'name': 'scroll(to,right,left,down,up) ',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       await scrollTo($('#myDIV'));
 
@@ -141,7 +152,7 @@ suite.add({
   .add({
     'name': 'alert and click button',
     'fn': async (deferred) => {
-      await openBrowser();
+      await _openBrowser();
       await goto("https://getgauge-examples.github.io/js-taiko/");
       alert('Message 1', async () => await dismiss());
       alert('Message 2', async () => await accept());
