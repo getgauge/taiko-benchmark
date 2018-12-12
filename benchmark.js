@@ -173,11 +173,12 @@ suite.add({
   .on('complete', function () {
     console.log(benchmarkResults);
     const dir = path.join(process.cwd(), `reports`);
+    const osPlatform = os.platform();
     const result = {
       'taikoVersion' : require('taiko/package.json').version,
       'chromiumVersion': require('taiko/package.json').taiko.chromium_version,
       'machineDetails':{
-      platform: os.platform(),
+      platform: osPlatform,
       release: os.release(),
       osType: os.type(),
       osArch: os.arch(),
@@ -191,7 +192,7 @@ suite.add({
         if (err) throw err;
       });
     }
-    fs.writeFile(path.join(dir,`${Date.now()}.json`), JSON.stringify(result),(err) => {
+      fs.writeFile(path.join(dir,`${Date.now()}-${osPlatform}.json`), JSON.stringify(result),(err) => {
       if (err) throw err;
     }); 
   })
