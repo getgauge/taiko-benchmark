@@ -172,7 +172,7 @@ suite.add({
   })
   .on('complete', function () {
     console.log(benchmarkResults);
-    const dir = path.join(process.cwd(), `reports`);
+    const dir = path.join(process.cwd());
     const osPlatform = os.platform();
     const result = {
       'taikoVersion' : require('taiko/package.json').version,
