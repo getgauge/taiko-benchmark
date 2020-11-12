@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "benchmark": "^2.1.4",
-    "taiko": "^1.0.25",
+    "taiko": "^1.0.28",
     "speedtest-net": "2.1.1"
   }
 }
